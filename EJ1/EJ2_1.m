@@ -37,3 +37,19 @@ figure;
 plot(k,rxxP)
 
 %% ITEM 2
+
+%% ITEM 5
+
+SxxNP = fft(RxxNP);
+mag_SxxNP = abs(SxxNP);
+SxxNP(mag_SxxNP<1e-6) = 0;
+f = 0:1:length-1;
+figure
+plot(f,mag_SxxNP)
+
+SxxP = fft(RxxP);
+mag_SxxP = abs(SxxP);
+SxxP(mag_SxxP<1e-6) = 0;
+f = 0:1:length-1;
+figure
+plot(f,mag_SxxP)
