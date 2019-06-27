@@ -57,12 +57,6 @@ hold on
 plot(k,y)
 
 %---------- Ej1.2 ----------
-corrCoefs = zeros(N-1,1); %contendrá los coeficientes de correlación para k entre 1 y 127
-
-for k = 1:N-1
-
-end
-
 
 
 

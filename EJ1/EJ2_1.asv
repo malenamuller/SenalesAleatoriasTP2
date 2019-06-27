@@ -60,7 +60,7 @@ for k = 1:length
     rxxMat = rxxToep(1:k,1:k);
     rxxVect = (rxxP(1:k))';
     corrCoefVect = inv(rxxMat) * rxxVect'; % Solving Yule Walker Equation
-    partialCorrCoefP(k)= corrCoefVect(k)
+    partialCorrCoefNP(k)= corrCoefVect(k)
 end
 
 %
