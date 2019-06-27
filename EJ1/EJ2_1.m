@@ -63,19 +63,39 @@ for k = 1:length
     partialCorrCoefP(k)= corrCoefVect(k)
 end
 
-%
+%% ITEM 3
+% El AR(2) aparentemente lo describe
+% X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
+phi21 = 0.1276;
+phi22 = -0.0288;
+
+%% ITEM 4
+
+Rxx_T = zeros(length,1);
+Rxx_T(1) = RxxNP(1);
+Rxx_T(2) = RxxNP(2);
+
+for k = 3:length-1
+   Rxx_T(k) = phi21.*Rxx_T(k-1) + phi22.*Rxx_T(k-2); 
+end
+rxx_T = Rxx_T/Rxx_T(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_T)
+
 %% ITEM 5
 
 SxxNP = fft(RxxNP);
 mag_SxxNP = abs(SxxNP);
 SxxNP(mag_SxxNP<1e-6) = 0;
-f = 0:1:length-1;
+f = 0:1:length;
 figure
 plot(f,mag_SxxNP)
 
 SxxP = fft(RxxP);
 mag_SxxP = abs(SxxP);
 SxxP(mag_SxxP<1e-6) = 0;
-f = 0:1:length-1;
+f = 0:1:length;
 figure
 plot(f,mag_SxxP)
