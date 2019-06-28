@@ -66,6 +66,7 @@ end
 %% ITEM 3
 % El AR(2) aparentemente lo describe
 % X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
+% Los phi los calcule en hoja aparte. Hay que pasarlos al informe despues
 phi21 = 0.1276;
 phi22 = -0.0288;
 
@@ -85,7 +86,7 @@ figure
 plot(k,rxx_T)
 
 %% ITEM 5
-
+% Por transformada
 SxxNP = fft(RxxNP);
 mag_SxxNP = abs(SxxNP);
 SxxNP(mag_SxxNP<1e-6) = 0;
@@ -99,3 +100,5 @@ SxxP(mag_SxxP<1e-6) = 0;
 f = 0:1:length;
 figure
 plot(f,mag_SxxP)
+
+% Por periodogramas
