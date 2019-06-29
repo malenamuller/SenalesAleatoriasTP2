@@ -1,5 +1,10 @@
 \input{./preamble.tex}
+\usepackage[utf8x]{inputenc}
 
+\DeclareUnicodeCharacter{00A0}{ }
+
+\DeclareUnicodeCharacter{00A0}{~}
+\newunicodechar{^^a0}{~}
 
 \begin{document}
 
@@ -37,6 +42,47 @@ Para los mismos valores de $k$ y $N$ previamente mencionados.
 
 Al normalizar con $R_{xx_{NP}}(0)$ cada uno de los valores estimados de esta manera,  se obtienen los coeficientes de autocorrelación total $r_{xx_{NP}}(k)$ (no polarizado) y $r_{xx_{P}}$ (polarizado), que se pueden ver graficados en las figuras \ref{rxxNP} y \ref{rxxP}, respectivamente.
 
+El c\'odigo implementado para realizar esto, es el siguiente:
+
+%%%%%%
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 1
+clear all;
+clc;
+
+S = load('Archivo_2.mat');
+%whos S
+%whos -file Archivo_2.mat
+
+N = 4096;
+length = 128;
+% Estimador no polarizado y polarizado
+RxxNP = zeros(length, 1); %contendr\'a el RxxNP para cada valor de k entre 0 y 127
+RxxP = zeros(length, 1); %contendr\'a el RxxP para cada valor de k entre 0 y 127
+for k = 0:length-1
+    sum = 0;
+    for i = 0:N-k-1
+        sum = sum + (S.x(i+1) * S.x(i+1+k));
+    end
+    RxxNP(k+1) = (1/(N-k)) * sum;
+    RxxP(k+1) = (1/N) * sum; 
+end
+
+clearvars sum;
+clearvars i;
+clearvars k;
+
+% Coeficiente de correlacion
+rxxNP = RxxNP/RxxNP(1);
+rxxP = RxxP/RxxP(1);
+
+k = 0:1:length-1;
+figure;
+plot(k,rxxNP)
+figure;
+plot(k,rxxP)
+\end{lstlisting}
+
 \begin{figure}[H] %!ht
 \centering
 \includegraphics[scale=0.45]{../EJ1/rxxNP}
@@ -62,6 +108,47 @@ r_{xx} = R \cdot \Phi
 \]
 
 Donde $R$ es la matriz de coeficientes de autocorrelación (que es una matriz de toeplitz) y $\Phi$ el vector de coeficientes $\phi_{p,k}$. De dicho vector, se utiliza solamente el último elemento (donde $p=k$) en cada caso, y se lo almacena en otro vector nuevo para tener todos los coeficientes de correlación parcial. Se graficaron los coeficientes obtenidos tanto para el caso no polarizado como para el polarizado. También resultaron ambos casos valores muy similares, por lo que se separaron las gráficas al igual que antes.
+
+A continuaci\'on se presenta el c\'odigo:
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 2
+length = 127;
+
+%Caso a partir de estimacion de Rxx NO polarizado
+partialCorrCoefNP = zeros (1, length) %contendr\'a los coeficientes de 
+                                  %correlaci\'on parcial para k entre 1 y 127
+                                  %a partir del caso no polarizado.
+
+rxxNPaux = rxxNP                               
+for k = 1:length
+    rxxToep = toeplitz(rxxNPaux') % Se genera la matriz de Toeplitz
+    rxxMat = rxxToep(1:k,1:k)
+    rxxVect = (rxxNPaux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect;% Se resuelve la ecuación de Yule Walker
+    partialCorrCoefNP(k)= corrCoefVect(k);
+end
+
+%Caso a partir de estimacion de Rxx polarizado
+partialCorrCoefP = zeros(1,length); %contendrá los coeficientes de 
+                                 %correlación parcial para k entre 1 y 127; 
+                                 %a partir del caso polarizado
+rxxPaux = rxxP;                                
+for k = 1:length
+    rxxToep = toeplitz(rxxPaux'); % Generating Toeplitz Matrix
+    rxxMat = rxxToep(1:k,1:k);
+    rxxVect = (rxxPaux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect; % Solving Yule Walker Equation
+    partialCorrCoefP(k)= corrCoefVect(k);
+end
+q = 1:length;
+figure
+stem(q,partialCorrCoefNP)
+
+q = 1:length;
+figure
+stem(q,partialCorrCoefP)
+\end{lstlisting}
 
 \begin{figure}[H] %!ht
 \centering
@@ -98,7 +185,51 @@ Teniendo además en cuenta que $R_{xx}(k) = R_{xx}(-k)$, se plantean dos ecuacio
 \right.
 \]
 
-De donde se obtiene que $\phi_{2,1} = 0.1276$ y $\phi_{2,2} = -0.0288$. Con dichos valores, se calcula anal\'iticamente $R_{xx}(k)$ con la fórmula recursiva previamente planteada y $ r_{xx}(k) $, con $k$ entero entre 0 y 127. La gráfica obtenida se muestra a continuación.
+De donde se obtiene que $\phi_{2,1} = 0.1276$ y $\phi_{2,2} = -0.0288$. Con dichos valores, se calcula anal\'iticamente $R_{xx}(k)$ con la fórmula recursiva previamente planteada y $ r_{xx}(k) $, con $k$ entero entre 0 y 127. 
+
+El código empleado es el siguiente:
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 3
+% El AR(2) aparentemente lo describe
+% X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
+% Los phi los calcule en hoja aparte. Hay que pasarlos al informe despues
+phi21 = 0.1276;
+phi22 = -0.0288;
+
+
+%% ITEM 4
+
+Rxx_TNP = zeros(length,1);
+Rxx_TNP(1) = RxxNP(1);
+Rxx_TNP(2) = RxxNP(2);
+
+for k = 3:length-1
+   Rxx_TNP(k) = phi21.*Rxx_TNP(k-1) + phi22.*Rxx_TNP(k-2); 
+end
+rxx_TNP = Rxx_TNP/Rxx_TNP(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_TNP)
+
+
+Rxx_TP = zeros(length,1);
+Rxx_TP(1) = RxxP(1);
+Rxx_TP(2) = RxxP(2);
+
+for k = 3:length-1
+   Rxx_TP(k) = phi21.*Rxx_TP(k-1) + phi22.*Rxx_TP(k-2); 
+end
+rxx_TP = Rxx_TP/Rxx_TP(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_TP)
+\end{lstlisting}
+%%%%%%%
+
+La gráfica obtenida se muestra a continuación.
 
 \begin{figure}[H] %!ht
 \centering
@@ -112,6 +243,17 @@ La curva obtenida se asemeja a la estimada con los valores al principio, y luego
 \subsection{Estimaci\'on de la densidad espectral de potencia de X(n)}
 
 En primer lugar, se estima la densidad espectral de potencia a partir de la transformada de Fourier discreta de la autocorrelación no polarizada. Por el mismo motivo mencionado anteriormente, se muestra solamente la resultante del caso no polarizado, dado que la otra es prácticamente similar. Los resultados pueden observarse en la figura \ref{densidadEs}.
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 5
+% Por transformada
+SxxNP = fft(RxxNP);
+mag_SxxNP = abs(SxxNP);
+SxxNP(mag_SxxNP<1e-6) = 0;
+f = 0:1:length;
+figure
+plot(f,mag_SxxNP)
+\end{lstlisting}
 
 \begin{figure}[H] %!ht
 \centering
@@ -127,6 +269,40 @@ Por otro lado, se estima la densidad espectral de potencia a partir de la promed
 \]
 
 Donde en este caso $n=16$. Pueden verse los resultados en la figura \ref{perio}.
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+% Por periodogramas
+Rxx_Vector = zeros(16,128);
+% Se divide la entrada en 16 grupos de 256 muestras, calculando
+% a 16 funciones de autocorrelación sus 128 primeros valores
+% para el caso no polarizado
+for l = 1:16
+    for k = 0:127
+        sum = 0;
+        for i = 0:256-k-1
+            sum = sum + (S.x(256*(l-1)+i+1) * S.x(256*(l-1)+i+1+k));
+        end
+        Rxx_Vector(l,k+1) = (1/(256-k)) * sum;
+    end
+end
+Sxx_Vector = zeros(128,16);
+% Se calcula la densidad espectral de cada uno
+for k = 1:16
+    Sxx_Vector(:,k) = fft(Rxx_Vector(k,:));
+end
+Sxx_Vector = Sxx_Vector';
+Sxx_Med = zeros(1,128);
+% Se estima la densidad promedio
+for k = 1:16
+    Sxx_Med = Sxx_Med + Sxx_Vector(k,:);
+end
+Sxx_Med = Sxx_Med/16;
+mag_SxxMed = abs(Sxx_Med);
+SxxNP(mag_SxxMed<1e-6) = 0;
+figure
+plot(1:128,mag_SxxMed)
+\end{lstlisting}
+
 
 \begin{figure}[H] %!ht
 \centering
