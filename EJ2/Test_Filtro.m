@@ -7,7 +7,7 @@ t = 0:seconds(1/Fs):seconds(info.Duration);
 t = t(1:end);
 data = y(:,1);
 S = compand(data,255,max(data),'mu/compressor');
-Noise = wgn(length(S),1,-60);
+Noise = wgn(length(S),1,-40);
 X_tot = S + Noise;
 
 Stot = double.empty;
@@ -17,18 +17,19 @@ Iteraciones = cast(length(S)/Muestras,'uint64');
 for l=0:Iteraciones-1
     % td significa tiempo discretizado
     td = 1+l*Muestras:Muestras+l*Muestras; % el -1 es para que tenga length = muestras
-    x = X_tot(td);
-    Rss = get_Rxx(S(td),Muestras);
     
-    Rxx = get_Rxx(x,Muestras);
-    Rxx_mat = toeplitz(Rxx);
-    %plot(1:length(Rxx),Rxx)
-    h = inv(Rxx_mat)*Rss';
-    %Rss_1_N = Rss(2:length(Rss));
-    %Rss_0_N_menos_1 = Rss(1:length(Rss)-1); 
-    %RssMat = toeplitz(Rss_0_N_menos_1);
-    %h = (inv(RssMat))*Rss_1_N';
-    Shat = conv(h,x,'same');
+    Rss = get_Rxx(S(td),Muestras);
+%     %------------------------------------
+%     Rxx = get_Rxx(X_tot(td),Muestras);
+%     Rxx_mat = toeplitz(Rxx);
+%     h = Rxx_mat\Rss'; % es lo mismo que inv(Rxx_mat)*Rss'
+%     %---------------------------------------
+    
+    Rss_1_N = Rss(2:Muestras);
+    Rss_0_N_menos_1 = Rss(1:Muestras-1); 
+    RssMat = toeplitz(Rss_0_N_menos_1);
+    h = (inv(RssMat))*Rss_1_N';
+    Shat = conv(h,X_tot(td),'same');
     Stot = [Stot Shat'];
 end
 subplot(4,1,1);
