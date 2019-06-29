@@ -33,8 +33,12 @@ rxxP = RxxP/RxxP(1);
 k = 0:1:length-1;
 figure;
 plot(k,rxxNP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{np}}(k)$','Fontsize',18,'Interpreter','latex');
 figure;
 plot(k,rxxP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{p}}(k)$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 2
 length = 127;
@@ -68,10 +72,14 @@ end
 q = 1:length;
 figure
 stem(q,partialCorrCoefNP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$\phi_{k,k_{np}}$','Fontsize',18,'Interpreter','latex');
 
 q = 1:length;
 figure
 stem(q,partialCorrCoefP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$\phi_{k,k_{p}}$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 3
 % El AR(2) aparentemente lo describe
@@ -94,7 +102,8 @@ rxx_TNP = Rxx_TNP/Rxx_TNP(1);
 k = 0:1:length-1;
 figure
 plot(k,rxx_TNP)
-
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{np}}(k)$','Fontsize',18,'Interpreter','latex');
 
 Rxx_TP = zeros(length,1);
 Rxx_TP(1) = RxxP(1);
@@ -108,6 +117,8 @@ rxx_TP = Rxx_TP/Rxx_TP(1);
 k = 0:1:length-1;
 figure
 plot(k,rxx_TP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{p}}(k)$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 5
 % Por transformada
@@ -117,6 +128,8 @@ SxxNP(mag_SxxNP<1e-6) = 0;
 f = 0:1:length;
 figure
 plot(f,mag_SxxNP)
+xlabel('$f$','Fontsize',18,'Interpreter','latex');
+ylabel('$S_{xx}(f)$','Fontsize',18,'Interpreter','latex');
 
 % Por periodogramas
 Rxx_Vector = zeros(16,128);
@@ -148,3 +161,5 @@ mag_SxxMed = abs(Sxx_Med);
 SxxNP(mag_SxxMed<1e-6) = 0;
 figure
 plot(1:128,mag_SxxMed)
+xlabel('$f$','Fontsize',18,'Interpreter','latex');
+ylabel('$\overline{S_{xx}}(f)$','Fontsize',18,'Interpreter','latex');

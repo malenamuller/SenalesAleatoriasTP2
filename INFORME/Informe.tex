@@ -1,10 +1,10 @@
 \input{./preamble.tex}
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 
-\DeclareUnicodeCharacter{00A0}{ }
+%\DeclareUnicodeCharacter{00A0}{ }
 
-\DeclareUnicodeCharacter{00A0}{~}
-\newunicodechar{^^a0}{~}
+%\DeclareUnicodeCharacter{00A0}{~}
+%\newunicodechar{^^a0}{~}
 
 \begin{document}
 
@@ -99,6 +99,8 @@ plot(k,rxxP)
 
 En una primera instancia, se superpuso las dos gráficas para poder denotar diferencias, pero resultaron ser casi iguales. Esto se deriva de que un estimador se encuentra dividido por $N$, y el otro por $N-k$. Siendo 127 el mayor valor que puede tomar $k$, sigue siendo pequeño en comparación a $N$, que es 4096, por lo que no afecta significativamente a los resultados. 
 
+\newpage
+
 \subsection{Estimaci\'on de los primeros 128 coeficientes de correlaci\'on parcial}
 
 Para calcular los coeficientes de correlación parcial $\phi_{k,k}$, se arma la matriz de toeplitz correspondiente para cada $k$, y con ella se resuelve la ecuación de Yule-Walker (de la página 262 del libro):
@@ -125,13 +127,13 @@ for k = 1:length
     rxxToep = toeplitz(rxxNPaux') % Se genera la matriz de Toeplitz
     rxxMat = rxxToep(1:k,1:k)
     rxxVect = (rxxNPaux(2:k+1));
-    corrCoefVect = inv(rxxMat) * rxxVect;% Se resuelve la ecuación de Yule Walker
+    corrCoefVect = inv(rxxMat) * rxxVect; % Se resuelve la ecuacion de Yule Walker
     partialCorrCoefNP(k)= corrCoefVect(k);
 end
 
 %Caso a partir de estimacion de Rxx polarizado
-partialCorrCoefP = zeros(1,length); %contendrá los coeficientes de 
-                                 %correlación parcial para k entre 1 y 127; 
+partialCorrCoefP = zeros(1,length); % contendra los coeficientes de 
+                                 %correlacion parcial para k entre 1 y 127; 
                                  %a partir del caso polarizado
 rxxPaux = rxxP;                                
 for k = 1:length
@@ -193,10 +195,8 @@ El código empleado es el siguiente:
 %% ITEM 3
 % El AR(2) aparentemente lo describe
 % X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
-% Los phi los calcule en hoja aparte. Hay que pasarlos al informe despues
 phi21 = 0.1276;
 phi22 = -0.0288;
-
 
 %% ITEM 4
 
@@ -212,7 +212,6 @@ rxx_TNP = Rxx_TNP/Rxx_TNP(1);
 k = 0:1:length-1;
 figure
 plot(k,rxx_TNP)
-
 
 Rxx_TP = zeros(length,1);
 Rxx_TP(1) = RxxP(1);
@@ -242,7 +241,7 @@ La curva obtenida se asemeja a la estimada con los valores al principio, y luego
 
 \subsection{Estimaci\'on de la densidad espectral de potencia de X(n)}
 
-En primer lugar, se estima la densidad espectral de potencia a partir de la transformada de Fourier discreta de la autocorrelación no polarizada. Por el mismo motivo mencionado anteriormente, se muestra solamente la resultante del caso no polarizado, dado que la otra es prácticamente similar. Los resultados pueden observarse en la figura \ref{densidadEs}.
+En primer lugar, se estima la densidad espectral de potencia a partir de la transformada de Fourier discreta de la autocorrelación no polarizada. Por el mismo motivo mencionado anteriormente, se muestra solamente la resultante del caso no polarizado, dado que la otra es prácticamente similar. Los resultados pueden observarse en la figura \ref{densidadEs}. Se muestra también el código implementado para el cálculo de la transformada.
 
 \begin{lstlisting}[language=Matlab, caption=EJ1.m]
 %% ITEM 5
@@ -268,13 +267,13 @@ Por otro lado, se estima la densidad espectral de potencia a partir de la promed
 \overline{S_{xx}}(f) = \frac{1}{n} \sum_{k=1}^n S_{xx}(f)_k
 \]
 
-Donde en este caso $n=16$. Pueden verse los resultados en la figura \ref{perio}.
+Donde en este caso $n=16$. Pueden verse los resultados en la figura \ref{perio}. Se muestra también el código que implementa el procedimiento.
 
 \begin{lstlisting}[language=Matlab, caption=EJ1.m]
 % Por periodogramas
 Rxx_Vector = zeros(16,128);
 % Se divide la entrada en 16 grupos de 256 muestras, calculando
-% a 16 funciones de autocorrelación sus 128 primeros valores
+% a 16 funciones de autocorrelacion sus 128 primeros valores
 % para el caso no polarizado
 for l = 1:16
     for k = 0:127
@@ -314,6 +313,7 @@ plot(1:128,mag_SxxMed)
 Se observa que las densidades resultantes son bastante similares, con pequeñas diferencias. De esto se desprende que es posible estimar la densidad espectral con grupos de muestras más pequeños, promediando las densidades intermedias. Es decir, sin tomar demasiados datos se logra cometer muy poco error con el estimador promedio.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section*{Ejercicio 2}
 
 
