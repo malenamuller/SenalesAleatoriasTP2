@@ -120,6 +120,9 @@ plot(f,mag_SxxNP)
 
 % Por periodogramas
 Rxx_Vector = zeros(16,128);
+% Se divide la entrada en 16 grupos de 256 muestras, calculando
+% a 16 funciones de autocorrelación sus 128 primeros valores
+% para el caso no polarizado
 for l = 1:16
     for k = 0:127
         sum = 0;
@@ -130,11 +133,13 @@ for l = 1:16
     end
 end
 Sxx_Vector = zeros(128,16);
+% Se calcula la densidad espectral de cada uno
 for k = 1:16
     Sxx_Vector(:,k) = fft(Rxx_Vector(k,:));
 end
 Sxx_Vector = Sxx_Vector';
 Sxx_Med = zeros(1,128);
+% Se estima la densidad promedio
 for k = 1:16
     Sxx_Med = Sxx_Med + Sxx_Vector(k,:);
 end
