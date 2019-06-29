@@ -46,10 +46,10 @@ partialCorrCoefNP = zeros(1,length); %contendrá los coeficientes de
 
 rxxNP_aux = rxxNP;                                
 for k = 1:length
-    rxxToep = toeplitz(rxxNP_aux'); % Generating Toeplitz Matrix
+    rxxToep = toeplitz(rxxNP_aux'); % Se genera la matriz de Toeplitz
     rxxMat = rxxToep(1:k,1:k);
     rxxVect = (rxxNP_aux(2:k+1));
-    corrCoefVect = inv(rxxMat) * rxxVect;% Solving Yule Walker Equation
+    corrCoefVect = inv(rxxMat) * rxxVect;% Se resuelve la ecuación de Yule Walker
     partialCorrCoefNP(k)= corrCoefVect(k);
 end
 
