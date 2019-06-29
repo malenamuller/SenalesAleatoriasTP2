@@ -1,0 +1,112 @@
+
+\input{./preamble.tex}
+
+
+\begin{document}
+
+\title{
+	\usefont{OT1}{bch}{b}{n}
+	\normalfont \normalsize \textsc{Instituto Tecnológico de Buenos Aires} \\ [25pt]
+	\horrule{2pt} \\[0.4cm]
+	\huge Trabajo Pr\'actico 2\\
+	\horrule{2pt} \\[0cm]
+\author{Grupo 2:\\M\'aspero, Martina \\Mestanza, Joaqu\'in\\ Müller, Malena\\Nowik, Ariel\\Regueira, Marcelo\\ \\ }
+\text{Señales Aleatorias - 2019}
+}
+\date{\today} 
+\pagenumbering{arabic}
+
+\maketitle
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Ejercicio 1}
+
+En esta parte del trabajo se estiman algunos par\'ametros de la secuencia aleatoria X(n) del archivo que se nos ha sido enviado.
+
+%%
+\subsection{Estimaci\'on de los primeros 128 valores de la funci\'on de autocorrelaci\'on utilizando los estimadores no polarizado y polarizado}
+
+Los primeros 128 valores del estimador no polarizado de la funci\'on de autocorrelaci\'on est\'an dados por:
+$$R_{xx_{np}}(k) = \frac{1}{N - k} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
+con $k$ tomando valores enteros entre 0 y 127. Los correspondientes al estimador polarizado son:
+$$R_{xx_{p}}(k) = \frac{1}{N} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
+para los mismos valores de $k$ previamente mencionados.
+
+Al normalizar cada uno de los valores estimados de esta manera,  se obtienen los $r_{xx_{NP}}(k)$ y los $r_{xx_{P}}$, que se pueden ver graficados en \ref{rxxNP} y en \ref{rxxP}, respectivamente.
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxNP}
+\caption{$r_{xx}(k)$ a partir del estimador no polarizado.}
+\label{rxxNP}
+\end{figure}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxP}
+\caption{$r_{xx}(k)$ a partir del estimador polarizado.}
+\label{rxxP}
+\end{figure}
+
+%%
+\subsection{Estimaci\'on de los primeros 127 coeficientes de correlaci\'on parcial}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/coefCorrParcialNP}
+\caption{Coeficientes de correlaci\'on parcial a partir del estimador no polarizado.}
+\label{fiNP}
+\end{figure}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/coefCorrParcialP}
+\caption{Coeficientes de correlaci\'on parcial a partir del estimador polarizado.}
+\label{fiP}
+\end{figure}
+
+%%
+\subsection{Determinaci\'on del modelo y orden que ajusta a la secuencia aleatoria $X(n)$}
+
+Luego de probar con distintos modelos, se determin\'o que el que mejor ajusta a la secuencia aleatoria $X(n)$ podr\'ia ser el AR de orden 2. Teniendo en cuenta que la entrada es una secuencia de ruido blanco y Gaussiano con varianza unitaria, se hallan los par\'ametros de este modelo.
+
+Se calcula anal\'iticamente $R_{xx}(k)$ y $ r_{xx}(k) $, con $k$ entero entre 0 y 127, para el caso del modelo AR orden 2, con las ecuaciones del libro de Shanmugan. %PONER EL NUMERO DE LAS ECUACIONES
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxNPteorico}
+\caption{$r_{xx}(k)$ a partir del estimador no polarizado, obtenido en forma teórica, en base al modelo AR orden 2.}
+\label{rxxTeo}
+\end{figure}
+%COMPARAR ESTO CON LO ESTIMADO AL PRINCIPIO
+
+
+%%
+\subsection{Estimaci\'on de la densidad espectral de potencia de X(n)}
+
+En primer lugar, se estima la densidad espectral de potencia a partir de la transformada de Fourier discreta de la autocorrelación no polarizada. Los resultados pueden observarse en la figura \ref{densidadEs}.
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/densidadEspectralFourierDiscNP}
+\caption{Estimaci\'on de la densidad espectral de potencia  de X(n) a partir de la transformada de Fourier discreta de la estimaci\'on de la autocorrelación no polarizada.}
+\label{densidadEs}
+\end{figure}
+
+Por otro lado, se estima la densidad espectral de potencia a partir de la promediaci\'on de periodogramas. Pueden verse los resultados en la figura \ref{perio}.
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/periodogramaNP}
+\caption{Estimaci\'on de la densidad espectral de potencia de $X(n)$ a partir de la promediaci\'on de periodogramas.}
+\label{perio}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Ejercicio 2}
+
+
+
+\end{document}
