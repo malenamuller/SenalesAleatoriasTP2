@@ -1,22 +1,29 @@
-%clear;
+clear;
 clc;
-info = audioinfo('Romayyohablando.m4a');
-[y,Fs] = audioread('Romayyohablando.m4a');
+file = 'martu.wav';
+info = audioinfo(file);
+[y,Fs] = audioread(file);
 t = 0:seconds(1/Fs):seconds(info.Duration);
 t = t(1:end);
 data = y(:,1);
-compressed = compand(data,255,max(data),'mu/compressor');
+S = compand(data,255,max(data),'mu/compressor');
+Noise = wgn(length(data),1,-20);
+X_tot = S + Noise;
 
-figure
-plot(t,data)
-hold on
-figure
-plot(t,compressed)
-noise = wgn(length(data),1,-25);
-%xlabel('Time')
-%ylabel('Audio Signal')
-%figure
-total = compressed + noise;
-total = smooth(total);
-plot(t,noise)
-sound(total,fs)
+N = 13;
+
+x = X_tot(1:N);
+varS = var(S);
+
+%Acá calculamos Rxx(n) según la formula de Shanmugan
+Rxx = get_Rxx(x,N);
+
+%Sacamos la respuesta h(n) del filtro (Página 412 Shanmugan)
+R = toeplitz(Rxx);
+Rxs = repmat( varS, [1,length(Rxx)] )';
+h = inv(R)*Rxs;
+
+%Shat la calculamos con la formula página 411 Shanmugan
+Shat = get_Shat(h,x,N);
+
+plot(1:length(Shat),Shat)
