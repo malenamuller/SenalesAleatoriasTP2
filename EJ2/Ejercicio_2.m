@@ -1,7 +1,7 @@
 clear;
 clc;
 %leemos archivo (debe ser mono)
-file = 'whereIam8Khz.wav';
+file = 'pcm mono 8 bit 8kHz.wav';
 info = audioinfo(file);
 [data,Fs] = audioread(file);
 t = 0:seconds(1/Fs):seconds(info.Duration);
@@ -9,7 +9,7 @@ S = compand(data,255,max(data),'mu/compressor'); % esta es la señal
 snr = 30; %creo que esto esta en dB
 X_tot = awgn(S,snr); % X = S + N 
 Muestras = 160;
-n = 11; % longitud de la rta impulsiva
+n = 11; % longitud de la rta impulsiva 
 Iteraciones = cast(floor(length(S)/Muestras),'uint64'); 
 shat = double.empty;
 
@@ -31,4 +31,5 @@ title('Con ruido')
 subplot(3,1,3);
 plot(t(1:length(shat)),shat)
 title('Estimación')
+%sound(X_tot)
 sound(shat)
