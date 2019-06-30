@@ -9,7 +9,7 @@ S = compand(data,255,max(data),'mu/compressor'); % esta es la señal
 snr = 30; %creo que esto esta en dB
 X_tot = awgn(S,snr); % X = S + N 
 Muestras = 160;
-n = 11; % longitud de la rta impulsiva
+n = 11; % longitud de la filtro
 Iteraciones = cast(floor(length(S)/Muestras),'uint64'); 
 shat = double.empty;
 
