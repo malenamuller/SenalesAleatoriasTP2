@@ -316,6 +316,85 @@ Se observa que las densidades resultantes son bastante similares, con pequeñas 
 \newpage
 \section*{Ejercicio 2}
 
+\begin{lstlisting}[language=Matlab, caption=Ejercicio2.m]
+clear;
+clc;
+%leemos archivo (debe ser mono)
+file = 'whereIam8Khz.wav';
+info = audioinfo(file);
+[data,Fs] = audioread(file);
+t = 0:seconds(1/Fs):seconds(info.Duration);
+S = compand(data,255,max(data),'mu/compressor'); % esta es la senal
+Muestras = Fs*20e-3; %160 si fs 8Khz %fs*20ms = Muestras
+Ventanas = cast(floor(length(S)/Muestras),'uint64'); 
+S = S(1:Ventanas*Muestras); %Recortamos la senal en funcion de la cantidad de ventanas
+PotRuido = -30; % esta en dB
+Noise = wgn(length(S),1,PotRuido);
+X_tot = S + Noise;
+% La variable size determina la longitud de la respuesta impulsiva
+% La longitud seria de 2*size+1
+size = 10;
+m = -size:size;
+shat = double.empty; %en esta variable guardaremos el S estimada
+for l=0:Ventanas-1
+    td = (1+l*Muestras):(Muestras+l*Muestras);
+    Act_X = X_tot(td);    
+    Act_S = S(td);
+    Rxx = get_Rxx(Act_X, Muestras,2*size+1);
+    Rss = get_Rxx(Act_S, Muestras,size+1);
+    RssMat = 1:size*2+1;
+    for i=1:size*2+1
+        index =  abs(size+1-i)+1;
+        RssMat(i) = Rss( index );
+    end
+    R = toeplitz(Rxx);
+    h = R\RssMat';
+    Shift_H = circshift(h,size); % hacemos un shifteo a la 
+    % respuesta impulsiva dado que no es causal
+    estimacion = conv(Act_X,Shift_H,'same');        
+    shat = [shat estimacion'];
+end
+subplot(3,1,1);
+plot(t(1:length(S)),S)
+title('Original')
+subplot(3,1,2);
+plot(t(1:length(X_tot)),X_tot)
+title('Con ruido')
+subplot(3,1,3);
+plot(t(1:length(shat)),shat)
+title('Estimacion')
+player = audioplayer(shat, Fs);
+play(player);
+%para parar el audio stop(player);
+\end{lstlisting}
+
+\begin{lstlisting}[language=Matlab, caption=getRxx.m]
+function [ Rxx ] = getRxx(x,N,k)
+%Esta funcion es para obtener el estimador de la autocorrelacion de X
+%Esta en la pagina 567 del Shanmugan
+% x es el vector con las muestras
+% N es la cantidad de muestras
+% k es hasta donde calcular Rxx
+Rxx = double.empty ;
+for j = 0:k-1
+    sumatoria = 0;
+    for i = 0:N-j-1
+        sumatoria = sumatoria + x(i+j+1)*x(i+1); % calculo la sumatoria
+    end
+    Rxx(j+1) = (1/(N-j))*sumatoria; % los sumo y divido por el k correspondiente
+end
+end
+
+\end{lstlisting}
+
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.7]{../EJ2/EJ2.jpg}
+\caption{Estimación de la señal de prueba 'whereIam8Khz.wav'}
+\label{EstimacionWhereIam}
+\end{figure}
+
 
 
 \end{document}
