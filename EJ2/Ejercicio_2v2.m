@@ -23,7 +23,6 @@ for l=0:Iteraciones-1
     Muestras = length(Act_X);
     Rxx = get_Rxx(Act_X, Muestras,2*size+1);
     Rss = get_Rxx(Act_S, Muestras,size+1);
-    Rxx = Rxx(1:2*size+1);
     RssMat = 1:size*2+1;
     for i=1:size*2+1
         index =  abs(size+1-i)+1;
