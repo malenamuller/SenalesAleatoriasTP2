@@ -1,0 +1,321 @@
+\input{./preamble.tex}
+\usepackage[utf8]{inputenc}
+
+%\DeclareUnicodeCharacter{00A0}{ }
+
+%\DeclareUnicodeCharacter{00A0}{~}
+%\newunicodechar{^^a0}{~}
+
+\begin{document}
+
+\title{
+	\usefont{OT1}{bch}{b}{n}
+	\normalfont \normalsize \textsc{Instituto Tecnológico de Buenos Aires} \\ [25pt]
+	\horrule{2pt} \\[0.4cm]
+	\huge Trabajo Pr\'actico 2\\
+	\horrule{2pt} \\[0cm]
+\author{Grupo 2:\\M\'aspero, Martina \\Mestanza, Joaqu\'in\\ Müller, Malena\\Nowik, Ariel\\Regueira, Marcelo\\ \\ }
+\text{Señales Aleatorias - 2019}
+}
+\date{\today} 
+\pagenumbering{arabic}
+
+\maketitle
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Ejercicio 1}
+
+En esta parte del trabajo se estiman algunos par\'ametros de la secuencia aleatoria X(n) del archivo que se nos ha sido enviado.
+
+%%
+\subsection{Estimaci\'on de los primeros 128 valores de la funci\'on de autocorrelaci\'on utilizando los estimadores no polarizado y polarizado}
+
+El estimador no polarizado de la autocorrelación está dado por la expresión (de la página 567 del libro ``Random Signals'', K. Sam Shanmugan):
+$$R_{xx_{np}}(k) = \frac{1}{N - k} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
+Donde $N$ es la cantidad de muestras asignadas, que en este caso son 4096. Los valores que toma $k$ son entre 0 y 127, para obtener los 128 primeros valores solicitados.\par
+
+El estimador polarizado esta dado por la expresión (de la página 571 del libro):
+
+$$R_{xx_{p}}(k) = \frac{1}{N} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
+Para los mismos valores de $k$ y $N$ previamente mencionados.
+
+Al normalizar con $R_{xx_{NP}}(0)$ cada uno de los valores estimados de esta manera,  se obtienen los coeficientes de autocorrelación total $r_{xx_{NP}}(k)$ (no polarizado) y $r_{xx_{P}}$ (polarizado), que se pueden ver graficados en las figuras \ref{rxxNP} y \ref{rxxP}, respectivamente.
+
+El c\'odigo implementado para realizar esto, es el siguiente:
+
+%%%%%%
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 1
+clear all;
+clc;
+
+S = load('Archivo_2.mat');
+%whos S
+%whos -file Archivo_2.mat
+
+N = 4096;
+length = 128;
+% Estimador no polarizado y polarizado
+RxxNP = zeros(length, 1); %contendr\'a el RxxNP para cada valor de k entre 0 y 127
+RxxP = zeros(length, 1); %contendr\'a el RxxP para cada valor de k entre 0 y 127
+for k = 0:length-1
+    sum = 0;
+    for i = 0:N-k-1
+        sum = sum + (S.x(i+1) * S.x(i+1+k));
+    end
+    RxxNP(k+1) = (1/(N-k)) * sum;
+    RxxP(k+1) = (1/N) * sum; 
+end
+
+clearvars sum;
+clearvars i;
+clearvars k;
+
+% Coeficiente de correlacion
+rxxNP = RxxNP/RxxNP(1);
+rxxP = RxxP/RxxP(1);
+
+k = 0:1:length-1;
+figure;
+plot(k,rxxNP)
+figure;
+plot(k,rxxP)
+\end{lstlisting}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxNP}
+\caption{$r_{xx}(k)$ a partir del estimador no polarizado.}
+\label{rxxNP}
+\end{figure}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxP}
+\caption{$r_{xx}(k)$ a partir del estimador polarizado.}
+\label{rxxP}
+\end{figure}
+
+En una primera instancia, se superpuso las dos gráficas para poder denotar diferencias, pero resultaron ser casi iguales. Esto se deriva de que un estimador se encuentra dividido por $N$, y el otro por $N-k$. Siendo 127 el mayor valor que puede tomar $k$, sigue siendo pequeño en comparación a $N$, que es 4096, por lo que no afecta significativamente a los resultados. 
+
+\newpage
+
+\subsection{Estimaci\'on de los primeros 128 coeficientes de correlaci\'on parcial}
+
+Para calcular los coeficientes de correlación parcial $\phi_{k,k}$, se arma la matriz de toeplitz correspondiente para cada $k$, y con ella se resuelve la ecuación de Yule-Walker (de la página 262 del libro):
+
+\[
+r_{xx} = R \cdot \Phi
+\]
+
+Donde $R$ es la matriz de coeficientes de autocorrelación (que es una matriz de toeplitz) y $\Phi$ el vector de coeficientes $\phi_{p,k}$. De dicho vector, se utiliza solamente el último elemento (donde $p=k$) en cada caso, y se lo almacena en otro vector nuevo para tener todos los coeficientes de correlación parcial. Se graficaron los coeficientes obtenidos tanto para el caso no polarizado como para el polarizado. También resultaron ambos casos valores muy similares, por lo que se separaron las gráficas al igual que antes.
+
+A continuaci\'on se presenta el c\'odigo:
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 2
+length = 127;
+
+%Caso a partir de estimacion de Rxx NO polarizado
+partialCorrCoefNP = zeros (1, length) %contendr\'a los coeficientes de 
+                                  %correlaci\'on parcial para k entre 1 y 127
+                                  %a partir del caso no polarizado.
+
+rxxNPaux = rxxNP                               
+for k = 1:length
+    rxxToep = toeplitz(rxxNPaux') % Se genera la matriz de Toeplitz
+    rxxMat = rxxToep(1:k,1:k)
+    rxxVect = (rxxNPaux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect; % Se resuelve la ecuacion de Yule Walker
+    partialCorrCoefNP(k)= corrCoefVect(k);
+end
+
+%Caso a partir de estimacion de Rxx polarizado
+partialCorrCoefP = zeros(1,length); % contendra los coeficientes de 
+                                 %correlacion parcial para k entre 1 y 127; 
+                                 %a partir del caso polarizado
+rxxPaux = rxxP;                                
+for k = 1:length
+    rxxToep = toeplitz(rxxPaux'); % Generating Toeplitz Matrix
+    rxxMat = rxxToep(1:k,1:k);
+    rxxVect = (rxxPaux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect; % Solving Yule Walker Equation
+    partialCorrCoefP(k)= corrCoefVect(k);
+end
+q = 1:length;
+figure
+stem(q,partialCorrCoefNP)
+
+q = 1:length;
+figure
+stem(q,partialCorrCoefP)
+\end{lstlisting}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/coefCorrParcialNP}
+\caption{Coeficientes de correlaci\'on parcial a partir del estimador no polarizado.}
+\label{fiNP}
+\end{figure}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/coefCorrParcialP}
+\caption{Coeficientes de correlaci\'on parcial a partir del estimador polarizado.}
+\label{fiP}
+\end{figure}
+
+%%
+\subsection{Determinaci\'on del modelo y orden para ajustar a la secuencia aleatoria $X(n)$}
+
+Luego de probar con modelos AR, MA de segundo orden y ARMA(1,1), se determin\'o que el que mejor ajusta a la secuencia aleatoria $X(n)$ podr\'ia ser el AR de orden 2. Teniendo en cuenta que la entrada es una secuencia de ruido blanco y Gaussiano con varianza unitaria, se hallan los par\'ametros de este modelo. Se planteó solo el caso no polarizado, dado que se obtienen resultados muy similares como ocurrió previamente, por lo que se deja solo uno como caso representativo.\par
+Del vector de los $R_{xx_{np}}(k)$ obtenidos, se toman el $R_{xx_{np}}(0) = 1.3690$, $R_{xx_{np}}(1) = 0.1698$ y $R_{xx_{np}}(2) = -0.0178$.\par A partir de la expresión recursiva para la autocorrelación de un modelo AR de orden 2 (de la página 257 del libro):
+
+\[
+R_{xx}(k) = \phi_{2,1} \cdot R_{xx}(k-1) + \phi_{2,2} \cdot R_{xx}(k-2)
+\]
+
+Teniendo además en cuenta que $R_{xx}(k) = R_{xx}(-k)$, se plantean dos ecuaciones:
+
+\[
+\left\{
+\begin{array}{lll}
+     \phi_{2,1} \cdot R_{xx}(0) + \phi_{2,2} \cdot R_{xx}(1) & = & R_{xx}(1) 
+  \\ \phi_{2,1} \cdot R_{xx}(1) + \phi_{2,2} \cdot R_{xx}(0) & = & R_{xx}(2)
+\end{array}
+\right.
+\]
+
+De donde se obtiene que $\phi_{2,1} = 0.1276$ y $\phi_{2,2} = -0.0288$. Con dichos valores, se calcula anal\'iticamente $R_{xx}(k)$ con la fórmula recursiva previamente planteada y $ r_{xx}(k) $, con $k$ entero entre 0 y 127. 
+
+El código empleado es el siguiente:
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 3
+% El AR(2) aparentemente lo describe
+% X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
+phi21 = 0.1276;
+phi22 = -0.0288;
+
+%% ITEM 4
+
+Rxx_TNP = zeros(length,1);
+Rxx_TNP(1) = RxxNP(1);
+Rxx_TNP(2) = RxxNP(2);
+
+for k = 3:length-1
+   Rxx_TNP(k) = phi21.*Rxx_TNP(k-1) + phi22.*Rxx_TNP(k-2); 
+end
+rxx_TNP = Rxx_TNP/Rxx_TNP(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_TNP)
+
+Rxx_TP = zeros(length,1);
+Rxx_TP(1) = RxxP(1);
+Rxx_TP(2) = RxxP(2);
+
+for k = 3:length-1
+   Rxx_TP(k) = phi21.*Rxx_TP(k-1) + phi22.*Rxx_TP(k-2); 
+end
+rxx_TP = Rxx_TP/Rxx_TP(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_TP)
+\end{lstlisting}
+%%%%%%%
+
+La gráfica obtenida se muestra a continuación.
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/rxxNPteorico}
+\caption{$r_{xx}(k)$ a partir del estimador no polarizado, obtenido en forma teórica, en base al modelo AR orden 2.}
+\label{rxxTeo}
+\end{figure}
+
+La curva obtenida se asemeja a la estimada con los valores al principio, y luego se anula prácticamente. Esto es consistente con el rápido decaimiento que posee la curva hallada en la figura \ref{rxxNP}, donde los valores más allá de $k=10$ se observó que se encuentran todos en el orden de $10^{-2}$.
+
+\subsection{Estimaci\'on de la densidad espectral de potencia de X(n)}
+
+En primer lugar, se estima la densidad espectral de potencia a partir de la transformada de Fourier discreta de la autocorrelación no polarizada. Por el mismo motivo mencionado anteriormente, se muestra solamente la resultante del caso no polarizado, dado que la otra es prácticamente similar. Los resultados pueden observarse en la figura \ref{densidadEs}. Se muestra también el código implementado para el cálculo de la transformada.
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+%% ITEM 5
+% Por transformada
+SxxNP = fft(RxxNP);
+mag_SxxNP = abs(SxxNP);
+SxxNP(mag_SxxNP<1e-6) = 0;
+f = 0:1:length;
+figure
+plot(f,mag_SxxNP)
+\end{lstlisting}
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/densidadEspectralFourierDiscNP}
+\caption{Estimaci\'on de la densidad espectral de potencia  de X(n) a partir de la transformada de Fourier discreta de la estimaci\'on de la autocorrelación no polarizada.}
+\label{densidadEs}
+\end{figure}
+
+Por otro lado, se estima la densidad espectral de potencia a partir de la promediaci\'on de periodogramas. Para ello, las muestras iniciales se las divide en 16 grupos de 256 muestras cada uno. En cada grupo, se estiman los primeros 128 valores de la autocorrelación (no polarizado). A cada vector resultante, se le calcula la densidad espectral de potencia, y finalmente se las promedia (página 579 del libro): 
+
+\[
+\overline{S_{xx}}(f) = \frac{1}{n} \sum_{k=1}^n S_{xx}(f)_k
+\]
+
+Donde en este caso $n=16$. Pueden verse los resultados en la figura \ref{perio}. Se muestra también el código que implementa el procedimiento.
+
+\begin{lstlisting}[language=Matlab, caption=EJ1.m]
+% Por periodogramas
+Rxx_Vector = zeros(16,128);
+% Se divide la entrada en 16 grupos de 256 muestras, calculando
+% a 16 funciones de autocorrelacion sus 128 primeros valores
+% para el caso no polarizado
+for l = 1:16
+    for k = 0:127
+        sum = 0;
+        for i = 0:256-k-1
+            sum = sum + (S.x(256*(l-1)+i+1) * S.x(256*(l-1)+i+1+k));
+        end
+        Rxx_Vector(l,k+1) = (1/(256-k)) * sum;
+    end
+end
+Sxx_Vector = zeros(128,16);
+% Se calcula la densidad espectral de cada uno
+for k = 1:16
+    Sxx_Vector(:,k) = fft(Rxx_Vector(k,:));
+end
+Sxx_Vector = Sxx_Vector';
+Sxx_Med = zeros(1,128);
+% Se estima la densidad promedio
+for k = 1:16
+    Sxx_Med = Sxx_Med + Sxx_Vector(k,:);
+end
+Sxx_Med = Sxx_Med/16;
+mag_SxxMed = abs(Sxx_Med);
+SxxNP(mag_SxxMed<1e-6) = 0;
+figure
+plot(1:128,mag_SxxMed)
+\end{lstlisting}
+
+
+\begin{figure}[H] %!ht
+\centering
+\includegraphics[scale=0.45]{../EJ1/periodogramaNP}
+\caption{Estimaci\'on de la densidad espectral de potencia de $X(n)$ a partir de la promediaci\'on de periodogramas.}
+\label{perio}
+\end{figure}
+
+Se observa que las densidades resultantes son bastante similares, con pequeñas diferencias. De esto se desprende que es posible estimar la densidad espectral con grupos de muestras más pequeños, promediando las densidades intermedias. Es decir, sin tomar demasiados datos se logra cometer muy poco error con el estimador promedio.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Ejercicio 2}
+
+
+
+\end{document}

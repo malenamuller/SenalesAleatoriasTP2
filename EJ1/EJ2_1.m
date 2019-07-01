@@ -33,35 +33,53 @@ rxxP = RxxP/RxxP(1);
 k = 0:1:length-1;
 figure;
 plot(k,rxxNP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{np}}(k)$','Fontsize',18,'Interpreter','latex');
 figure;
 plot(k,rxxP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{p}}(k)$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 2
-length = 127
+length = 127;
 
 %Caso a partir de estimacion de Rxx NO polarizado
 partialCorrCoefNP = zeros(1,length); %contendrá los coeficientes de 
                                   %correlación parcial para k entre 1 y 127
                                   %a partir del caso no polarizado.
+
+rxxNP_aux = rxxNP;                                
 for k = 1:length
-    rxxToep = toeplitz([1 rxxNP']); % Generating Toeplitz Matrix
+    rxxToep = toeplitz(rxxNP_aux'); % Se genera la matriz de Toeplitz
     rxxMat = rxxToep(1:k,1:k);
-    rxxVect = (rxxNP(1:k))';
-    corrCoefVect = inv(rxxMat) * rxxVect'; % Solving Yule Walker Equation
-    partialCorrCoefNP(k)= corrCoefVect(k)
+    rxxVect = (rxxNP_aux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect;% Se resuelve la ecuación de Yule Walker
+    partialCorrCoefNP(k)= corrCoefVect(k);
 end
 
 %Caso a partir de estimacion de Rxx polarizado
 partialCorrCoefP = zeros(1,length); %contendrá los coeficientes de 
                                  %correlación parcial para k entre 1 y 127; 
                                  %a partir del caso polarizado
+rxxP_aux = rxxP;                                
 for k = 1:length
-    rxxToep = toeplitz([1 rxxP']); % Generating Toeplitz Matrix
+    rxxToep = toeplitz(rxxP_aux'); % Generating Toeplitz Matrix
     rxxMat = rxxToep(1:k,1:k);
-    rxxVect = (rxxP(1:k))';
-    corrCoefVect = inv(rxxMat) * rxxVect'; % Solving Yule Walker Equation
-    partialCorrCoefP(k)= corrCoefVect(k)
+    rxxVect = (rxxP_aux(2:k+1));
+    corrCoefVect = inv(rxxMat) * rxxVect; % Solving Yule Walker Equation
+    partialCorrCoefP(k)= corrCoefVect(k);
 end
+q = 1:length;
+figure
+stem(q,partialCorrCoefNP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$\phi_{k,k_{np}}$','Fontsize',18,'Interpreter','latex');
+
+q = 1:length;
+figure
+stem(q,partialCorrCoefP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$\phi_{k,k_{p}}$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 3
 % El AR(2) aparentemente lo describe
@@ -72,18 +90,35 @@ phi22 = -0.0288;
 
 %% ITEM 4
 
-Rxx_T = zeros(length,1);
-Rxx_T(1) = RxxNP(1);
-Rxx_T(2) = RxxNP(2);
+Rxx_TNP = zeros(length,1);
+Rxx_TNP(1) = RxxNP(1);
+Rxx_TNP(2) = RxxNP(2);
 
 for k = 3:length-1
-   Rxx_T(k) = phi21.*Rxx_T(k-1) + phi22.*Rxx_T(k-2); 
+   Rxx_TNP(k) = phi21.*Rxx_TNP(k-1) + phi22.*Rxx_TNP(k-2); 
 end
-rxx_T = Rxx_T/Rxx_T(1);
+rxx_TNP = Rxx_TNP/Rxx_TNP(1);
 
 k = 0:1:length-1;
 figure
-plot(k,rxx_T)
+plot(k,rxx_TNP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{np}}(k)$','Fontsize',18,'Interpreter','latex');
+
+Rxx_TP = zeros(length,1);
+Rxx_TP(1) = RxxP(1);
+Rxx_TP(2) = RxxP(2);
+
+for k = 3:length-1
+   Rxx_TP(k) = phi21.*Rxx_TP(k-1) + phi22.*Rxx_TP(k-2); 
+end
+rxx_TP = Rxx_TP/Rxx_TP(1);
+
+k = 0:1:length-1;
+figure
+plot(k,rxx_TP)
+xlabel('$k$','Fontsize',18,'Interpreter','latex');
+ylabel('$r_{xx_{p}}(k)$','Fontsize',18,'Interpreter','latex');
 
 %% ITEM 5
 % Por transformada
@@ -93,12 +128,38 @@ SxxNP(mag_SxxNP<1e-6) = 0;
 f = 0:1:length;
 figure
 plot(f,mag_SxxNP)
-
-SxxP = fft(RxxP);
-mag_SxxP = abs(SxxP);
-SxxP(mag_SxxP<1e-6) = 0;
-f = 0:1:length;
-figure
-plot(f,mag_SxxP)
+xlabel('$f$','Fontsize',18,'Interpreter','latex');
+ylabel('$S_{xx}(f)$','Fontsize',18,'Interpreter','latex');
 
 % Por periodogramas
+Rxx_Vector = zeros(16,128);
+% Se divide la entrada en 16 grupos de 256 muestras, calculando
+% a 16 funciones de autocorrelación sus 128 primeros valores
+% para el caso no polarizado
+for l = 1:16
+    for k = 0:127
+        sum = 0;
+        for i = 0:256-k-1
+            sum = sum + (S.x(256*(l-1)+i+1) * S.x(256*(l-1)+i+1+k));
+        end
+        Rxx_Vector(l,k+1) = (1/(256-k)) * sum;
+    end
+end
+Sxx_Vector = zeros(128,16);
+% Se calcula la densidad espectral de cada uno
+for k = 1:16
+    Sxx_Vector(:,k) = fft(Rxx_Vector(k,:));
+end
+Sxx_Vector = Sxx_Vector';
+Sxx_Med = zeros(1,128);
+% Se estima la densidad promedio
+for k = 1:16
+    Sxx_Med = Sxx_Med + Sxx_Vector(k,:);
+end
+Sxx_Med = Sxx_Med/16;
+mag_SxxMed = abs(Sxx_Med);
+SxxNP(mag_SxxMed<1e-6) = 0;
+figure
+plot(1:128,mag_SxxMed)
+xlabel('$f$','Fontsize',18,'Interpreter','latex');
+ylabel('$\overline{S_{xx}}(f)$','Fontsize',18,'Interpreter','latex');
