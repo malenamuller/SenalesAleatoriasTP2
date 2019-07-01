@@ -1,6 +1,9 @@
 function [ Rxx ] = get_Rxx(x,N,k)
 %Esta función es para obtener el estimador de la autocorrelacion de X
 %Está en la página 567 del Shanmugan
+% x es el vector con las muestras
+% N es la cantidad de muestras
+% k es hasta donde calcular Rxx
 Rxx = double.empty ;
 for j = 0:k-1
     sumatoria = 0;
