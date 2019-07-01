@@ -22,14 +22,14 @@ for l=0:Iteraciones-1
     alpha = -10;
     shift = exp((1i*2*pi*k*alpha)/length(Sxx));
     %(esto le aplica un (x(t+alpha)) alpha tiene que ser <0 para smoothing
-    H = (Sxs./Sxx).*(shift);
+    H = (Sxs./Sxx);
+    %.*(shift);
     h = ifft(H);
     h = real(h);
     Entrada = fft(X_tot(td));
-    %estimacion = conv(X_tot(td),h','same'); % computo la respuesta al filtro
-    estimacion = real(ifft(H.*Entrada'));
-    
-    shat = [shat estimacion]; % concateno las estimaciones en el vector Shat
+    estimacion = conv(X_tot(td),h','same'); % computo la respuesta al filtro
+    %estimacion = real(ifft(H.*Entrada'));
+    shat = [shat estimacion']; % concateno las estimaciones en el vector Shat
 end
 subplot(3,1,1);
 plot(t(1:length(t)-1),S)
