@@ -13,22 +13,23 @@ var_Ruido = var(Noise);
 %fs*20ms = Muestras
 Muestras = Fs*20e-3; %160 si fs 8Khz 
 Iteraciones = cast(floor(length(S)/Muestras),'uint64'); 
-size = 5;
+size = 10;
 m = -size:size;
 shat = double.empty;
 for l=0:Iteraciones-1
     td = (1+l*Muestras):(Muestras+l*Muestras);
     Act_X = X_tot(td);    
     Act_S = S(td);
-    Muestras = length(Act_X);
-    Rxx = get_Rxx(Act_X, Muestras,2*size+1);
-    Rss = get_Rxx(Act_S, Muestras,size+1);
+    Rxx = get_Rxx(Act_X, length(Act_X));
+    Rss = get_Rxx(Act_S, length(Act_S));
+    Rxx =
     Rxx = Rxx(1:2*size+1);
     RssMat = 1:size*2+1;
     for i=1:size*2+1
         index =  abs(size+1-i)+1;
         RssMat(i) = Rss( index );
     end
+    
     R = toeplitz(Rxx);
     h = R\RssMat';
     Shift_H = circshift(h,size);

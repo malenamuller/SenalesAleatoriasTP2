@@ -14,21 +14,13 @@ shat = double.empty;
 
 for l=0:Iteraciones-1
     td = (1+l*Muestras):(Muestras+l*Muestras); % td es el tiempo entre muestras(tiene length = muestras)
-    Rxx = get_Rxx(X_tot(td),Muestras);
-    Rss = get_Rxx(S(td),Muestras);
-    Sxx = fft(Rxx);
-    Sxs = fft(Rss);
-    k = 0:length(Sxx)-1;
-    alpha = -10;
-    shift = exp((1i*2*pi*k*alpha)/length(Sxx));
-    %(esto le aplica un (x(t+alpha)) alpha tiene que ser <0 para smoothing
-    H = (Sxs./Sxx);
-    %.*(shift);
-    h = ifft(H);
-    h = real(h);
-    Entrada = fft(X_tot(td));
-    estimacion = conv(X_tot(td),h','same'); % computo la respuesta al filtro
-    %estimacion = real(ifft(H.*Entrada'));
+    s = S(td);
+    x = X_tot(td);
+    Rxxder = get_Rxx(x,Muestras);
+    Rssder = get_Rxx(s,Muestras);
+    
+    
+    estimacion = conv(x,h,'same'); % computo la respuesta al filtro
     shat = [shat estimacion']; % concateno las estimaciones en el vector Shat
 end
 subplot(3,1,1);
@@ -41,4 +33,4 @@ subplot(3,1,3);
 plot(t(1:length(shat)),shat)
 title('Estimación')
 %sound(X_tot)
-sound(shat)
+%sound(shat)
