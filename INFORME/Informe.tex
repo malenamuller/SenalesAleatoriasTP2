@@ -193,7 +193,7 @@ El código empleado es el siguiente:
 
 \begin{lstlisting}[language=Matlab, caption=EJ1.m]
 %% ITEM 3
-% El AR(2) aparentemente lo describe
+% Se lo describe con un modelo AR(2)
 % X(n) = phi21*X(n-1) + phi22*X(n-2) + e(n)
 phi21 = 0.1276;
 phi22 = -0.0288;
@@ -315,11 +315,11 @@ Se observa que las densidades resultantes son bastante similares, con pequeñas 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section*{Ejercicio 2}
-Para el segundo ejercicio se pidió calcular Smoothing filters óptimos.
-Para ello, se utilizó la ecuacion 7.83.b del Shanmugan con una pequeña modificación dado que los Smoothing filters tienen respuesta impulsiva no causal.
-En primer lugar se define nuestra señal como X(n) = S(n) + v(n), donde S(n) es la señal de audio original y v(n) es ruido blanco gaussiano de media nula y se eligió una varia. Se estimaron las autocorrelaciones de X y de S utilizando la ecuación 9.6 del libro ``Random Signals'', K. Sam Shanmugan:
+Para el segundo ejercicio se pidió calcular Smoothing filters óptimos, aplicados a una señal de voz.
+Para ello, se utilizó la ecuacion 7.83.b del del libro ``Random Signals'', K. Sam Shanmugan, con una pequeña modificación dado que los Smoothing filters tienen respuesta impulsiva no causal.
+En primer lugar se define nuestra señal como X(n) = S(n) + v(n), donde S(n) es la señal de audio original y v(n) es ruido blanco gaussiano de media nula. La potencia del ruido utilizada es de -30dBw. Se estimaron las autocorrelaciones de X y de S utilizando la ecuación 9.6 del libro:
 $$R_{xx}(k) = \frac{1}{N - k} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
- para luego obtener la respuesta impulsiva y finalmente realizar a convolución con la X, obteniendo el estimador a partir de la ecuación 7.74.
+De esta forma, se obtiene luego la respuesta impulsiva y finalmente se realiza la convolución con la señal X, obteniendo el estimador a partir de la ecuación 7.74 del libro.
 
 \begin{lstlisting}[language=Matlab, caption=Ejercicio2.m]
 clear;
