@@ -315,6 +315,11 @@ Se observa que las densidades resultantes son bastante similares, con pequeñas 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section*{Ejercicio 2}
+Para el segundo ejercicio se pidió calcular Smoothing filters óptimos.
+Para ello, se utilizó la ecuacion 7.83.b del Shanmugan con una pequeña modificación dado que los Smoothing filters tienen respuesta impulsiva no causal.
+En primer lugar se define nuestra señal como X(n) = S(n) + v(n), donde S(n) es la señal de audio original y v(n) es ruido blanco gaussiano de media nula y se eligió una varia. Se estimaron las autocorrelaciones de X y de S utilizando la ecuación 9.6 del libro ``Random Signals'', K. Sam Shanmugan:
+$$R_{xx}(k) = \frac{1}{N - k} \sum_{i=1}^{N-k-1}X(i)X(i+k)$$
+ para luego obtener la respuesta impulsiva y finalmente realizar a convolución con la X, obteniendo el estimador a partir de la ecuación 7.74.
 
 \begin{lstlisting}[language=Matlab, caption=Ejercicio2.m]
 clear;
@@ -395,6 +400,12 @@ end
 \label{EstimacionWhereIam}
 \end{figure}
 
+Se puede ver en el primer gráfico de la figura la señal original, en la segunda se puede observar como se distorsiona la señal por efecto del ruido y en la tercera la estimación dada por el filtro obtenido. Se nota una gran similitud con la señal original.
+
+
+
+\subsubsection{Conclusiones}
+Durante la realizacion de este trabajo se pudo verificar el correcto funcionamiento de los "smoothing filters". Se logró a traves de la implementacion de uno obtener una estimacion muy similar a la señal original.
 
 
 \end{document}

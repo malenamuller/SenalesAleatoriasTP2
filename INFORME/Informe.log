@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.3.24)  1 JUL 2019 19:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.3.24)  1 JUL 2019 21:08
 entering extended mode
 **./Informe.tex
 (Informe.tex
@@ -1035,11 +1035,7 @@ File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
 File: listings.cfg 2019/02/27 1.8b listings configuration
 ))
 Package: listings 2019/02/27 1.8b (Carsten Heinz)
-) (Informe.aux
-
-LaTeX Warning: Label `perio' multiply defined.
-
-)
+) (Informe.aux)
 \openout1 = `Informe.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
@@ -1056,7 +1052,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 9.
 LaTeX Font Info:    Try loading font information for FML+futm on input line 9.
- ("C:\Program Files\MiKTeX 2.9\tex/latex/fourier\fmlfutm.fd"
+("C:\Program Files\MiKTeX 2.9\tex/latex/fourier\fmlfutm.fd"
 File: fmlfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futm.
 )
 LaTeX Font Info:    ... okay on input line 9.
@@ -1357,31 +1353,27 @@ ne 317.
 <../EJ2/EJ2.jpg, id=46, 349.80687pt x 284.06125pt>
 File: ../EJ2/EJ2.jpg Graphic file (type jpg)
 <use ../EJ2/EJ2.jpg>
-Package pdftex.def Info: ../EJ2/EJ2.jpg  used on input line 393.
+Package pdftex.def Info: ../EJ2/EJ2.jpg  used on input line 398.
 (pdftex.def)             Requested size: 244.86313pt x 198.84149pt.
- [10 <../EJ2/EJ2.jpg>] (Informe.aux)
-
-LaTeX Warning: There were multiply-defined labels.
-
- ) 
+ [10 <../EJ2/EJ2.jpg>] [11] (Informe.aux) ) 
 Here is how much of TeX's memory you used:
- 24179 strings out of 492945
- 469102 string characters out of 3135513
- 1038951 words of memory out of 3000000
- 27403 multiletter control sequences out of 15000+200000
- 128409 words of font info for 236 fonts, out of 3000000 for 9000
+ 24184 strings out of 492945
+ 469151 string characters out of 3135513
+ 1011933 words of memory out of 3000000
+ 27404 multiletter control sequences out of 15000+200000
+ 128679 words of font info for 239 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  66i,8n,67p,9111b,2256s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
-KTeX 2.9/fonts/type1/public/fourier/fourier-mex.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/fourier/fourier-ml.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/fourier/fourier-mlit.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
-public/fourier/fourier-ms.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/ut
-opia/putr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putri8a.p
-fb>
-Output written on Informe.pdf (10 pages, 333412 bytes).
+{C:/Program Files/MiKTeX 2.9/fonts/e
+nc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/fourier/fo
+urier-mex.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/fourier/fourier-m
+l.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/fourier/fourier-mlit.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/fourier/fourier-ms.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putr8a.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/adobe/utopia/putri8a.pfb>
+Output written on Informe.pdf (11 pages, 336046 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
+ 74 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  44597 words of extra memory for PDF output out of 51595 (max. 10000000)
 
