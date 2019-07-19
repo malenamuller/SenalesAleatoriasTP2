@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210) (preloaded format=pdflatex 2018.4.3)  1 JUL 2019 23:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6210) (preloaded format=pdflatex 2018.4.3)  2 JUL 2019 00:27
 entering extended mode
 **./Informe.tex
 (Informe.tex
@@ -1668,16 +1668,16 @@ ne 317.
 [9] <../EJ2/EJ2.jpg, id=46, 349.80687pt x 284.06125pt>
 File: ../EJ2/EJ2.jpg Graphic file (type jpg)
  <use ../EJ2/EJ2.jpg>
-Package pdftex.def Info: ../EJ2/EJ2.jpg used on input line 402.
+Package pdftex.def Info: ../EJ2/EJ2.jpg used on input line 398.
 (pdftex.def)             Requested size: 244.86313pt x 198.84149pt.
 
 [10 <../EJ2/EJ2.jpg>] [11] (Informe.aux) ) 
 Here is how much of TeX's memory you used:
- 24165 strings out of 493333
- 465552 string characters out of 3136603
- 818976 words of memory out of 3000000
+ 24169 strings out of 493333
+ 465589 string characters out of 3136603
+ 824052 words of memory out of 3000000
  27013 multiletter control sequences out of 15000+200000
- 128949 words of font info for 242 fonts, out of 3000000 for 9000
+ 129219 words of font info for 245 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  66i,8n,67p,8843b,2258s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fo
@@ -1688,7 +1688,7 @@ urier/fourier-mlit.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/fo
 urier/fourier-ms.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/adobe/utopi
 a/putr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/adobe/utopia/putri8
 a.pfb>
-Output written on Informe.pdf (11 pages, 337106 bytes).
+Output written on Informe.pdf (11 pages, 336219 bytes).
 PDF statistics:
  74 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
